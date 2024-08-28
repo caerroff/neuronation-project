@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('domainCategories', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('name');
-
+        Schema::table('training_sessions', function (Blueprint $table) {
+            $table->string('category_name');
         });
+        //
     }
 
     /**
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('domain_categories');
+        //
     }
 };

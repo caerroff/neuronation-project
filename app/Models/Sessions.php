@@ -11,7 +11,7 @@ class Sessions extends Model
 
     protected $table = "training_sessions";
 
-    protected $primaryKey = "session_id";
+    protected $primaryKey = "id";
 
     public $incrementing = true;
 

@@ -11,7 +11,7 @@ class DomainCategories extends Model
 
     protected $table = "domainCategories";
 
-    protected $primaryKey = "category_id";
+    protected $primaryKey = "id";
 
     public $incrementing = true;
 

@@ -11,7 +11,7 @@ class Courses extends Model
 
     protected $table = "courses";
 
-    protected $primaryKey = "course_id";
+    protected $primaryKey = "id";
 
     public $incrementing = true;
 
@@ -24,6 +24,6 @@ class Courses extends Model
 
     public function sessions()
     {
-        return $this->hasMany(Sessions::class, 'course_id', 'course_id');
+        return $this->hasMany(Sessions::class, 'id', 'course_id');
     }
 }
