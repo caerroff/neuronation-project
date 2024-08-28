@@ -19,23 +19,15 @@ class ProgressController extends Controller
      */
     public function index()
     {
-        $sessions = Sessions::all();
-        $sessionsWithScore = [];
-        foreach ($sessions as $session) {
-            $sessionsWithScore[] = [
-                'id' => $session->id,
-                'score' => Scores::where('sid', $session->id)->first()->score,
-                'user' => User::where('user_id', Scores::where('sid', $session->id)->first()->uid)->pluck('username')->first(),
-                'uid' => User::where('user_id', Scores::where('sid', $session->id)->first()->uid)->pluck('user_id')->first(),
-                'date' => $session->created_at,
-                'category' => $session->category_name,
-            ];
-        }
-        $returnedJSON = [
-            'status' => 200,
-            'history' => $sessionsWithScore,
-        ];
-        return new JsonResponse($returnedJSON);
+        echo '<h1>Progress API</h1>';
+        echo '<h2>Make sure to run /initDb before trying to access the api</h2>';
+        echo '<p>Available routes:</p>';
+        echo '<ul>';
+        echo '<li>GET /api/progress/{userId}</li>';
+        echo '<li>GET /initDb</li>';
+        echo '</ul>';
+
+        return;
     }
 
     public function initDb()
