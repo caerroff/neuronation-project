@@ -17,10 +17,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
+        'username',
         'password',
+        'status'
     ];
+
+    public $timestamps = false;
+
+    protected $primaryKey = "user_id";
 
     /**
      * The attributes that should be hidden for serialization.
@@ -40,8 +44,12 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function scores()
+    {
+        return $this->hasMany(Scores::class, 'uid', 'user_id');
     }
 }

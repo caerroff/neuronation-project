@@ -12,7 +12,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
-class HomeController extends Controller
+class ProgressController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,27 +25,15 @@ class HomeController extends Controller
             $sessionsWithScore[] = [
                 'id' => $session->id,
                 'score' => Scores::where('sid', $session->id)->first()->score,
-                'user' => User::where('id', Scores::where('sid', $session->id)->first()->uid)->first()->name,
+                'user' => User::where('user_id', Scores::where('sid', $session->id)->first()->uid)->pluck('username')->first(),
+                'uid' => User::where('user_id', Scores::where('sid', $session->id)->first()->uid)->pluck('user_id')->first(),
                 'date' => $session->created_at,
                 'category' => $session->category_name,
             ];
         }
-        $categories = [];
-        foreach ($sessionsWithScore as $session) {
-            //Checking if the category is already in the array
-            if(!array_key_exists($session['category'], $categories)){
-                $categories[$session['category']] = 1;
-            }else{
-                $categories[$session['category']] += 1;
-            }
-        }
-        //Take top 3 categories
-        arsort($categories);
-        $categories = array_slice($categories, 0, 3);
-        $categories = array_keys($categories);
         $returnedJSON = [
+            'status' => 200,
             'history' => $sessionsWithScore,
-            'lastCategories' => $categories,
         ];
         return new JsonResponse($returnedJSON);
     }
@@ -53,14 +41,15 @@ class HomeController extends Controller
     public function initDb()
     {
         try {
-            //Create one user
+            //Create 3 user
             $users = User::all();
             $users->each->delete();
-            $user = new User();
-            $user->password = Hash::make('admin');
-            $user->email = 'the-email@example.com';
-            $user->name = 'admin';
-            $user->save();
+            for ($i = 0; $i < 3; $i++) {
+                $user = new User();
+                $user->password = Hash::make('user' . $i);
+                $user->username = 'user' . $i;
+                $user->save();
+            }
 
             //Create one course
             $courses = Courses::all();
@@ -83,9 +72,11 @@ class HomeController extends Controller
             $sessions->each->delete();
             for ($i = 0; $i < 10; $i++) {
                 $session = new Sessions();
-                $session->course_id = $course->id;
+                $session->course_id = $course->course_id;
                 // Random category
-                $session->category_name = DomainCategories::all()[rand(0, 4)]->name;
+                $category = DomainCategories::all()[rand(0, 4)];
+                $session->category_id = $category->category_id;
+                $session->category_name = $category->name;
                 $session->save();
             }
 
@@ -95,7 +86,7 @@ class HomeController extends Controller
             $scores->each->delete();
             for ($i = 0; $i < 10; $i++) {
                 $score = new Scores();
-                $score->uid = $user->id;
+                $score->uid = User::all()[rand(0, 2)]->user_id;
                 $score->sid = Sessions::all()[$i]->id;
                 $score->score = rand(0, 100);
                 $score->save();
@@ -121,7 +112,38 @@ class HomeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        //Look for sessions where the user specified by the id parameter has a score
+        $sessions = Sessions::whereIn('id', Scores::where('uid', $id)->pluck('sid'))->get();
+        $sessionsWithScore = [];
+        foreach ($sessions as $session) {
+            $sessionsWithScore[] = [
+                'id' => $session->id,
+                'score' => Scores::where('sid', $session->id)->first()->score,
+                'user' => User::where('user_id', Scores::where('sid', $session->id)->first()->uid)->first()->username,
+                'uid' => User::where('user_id', Scores::where('sid', $session->id)->first()->uid)->first()->user_id,
+                'date' => $session->created_at,
+                'category' => $session->category_name,
+            ];
+        }
+        $categories = [];
+        foreach ($sessionsWithScore as $session) {
+            //Checking if the category is already in the array
+            if(!array_key_exists($session['category'], $categories)){
+                $categories[$session['category']] = 1;
+            }else{
+                $categories[$session['category']] += 1;
+            }
+        }
+        //Take top 3 categories
+        arsort($categories);
+        $categories = array_slice($categories, 0, 3);
+        $categories = array_keys($categories);
+        $returnedJSON = [
+            'status' => 200,
+            'history' => $sessionsWithScore,
+            'lastCategories' => $categories,
+        ];
+        return new JsonResponse($returnedJSON);
     }
 
     /**

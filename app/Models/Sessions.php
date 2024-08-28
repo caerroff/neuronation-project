@@ -9,9 +9,8 @@ class Sessions extends Model
 {
     use HasFactory;
 
-    protected $table = "training_sessions";
-
-    protected $primaryKey = "id";
+    protected $table = 'training_sessions';
+    protected $primaryKey = "session_id";
 
     public $incrementing = true;
 
@@ -25,5 +24,10 @@ class Sessions extends Model
     public function course()
     {
         return $this->belongsTo(Courses::class, 'course_id', 'course_id');
+    }
+
+    public function scores()
+    {
+        return $this->hasMany(Scores::class, 'session_id', 'session_id');
     }
 }

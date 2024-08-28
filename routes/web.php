@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProgressController;
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/api/progress', [ProgressController::class, 'index']);
 
-Route::get('/initDb', [HomeController::class, 'initDb']);
+Route::get('/api/progress/{userId}', [ProgressController::class, 'show'])->where('userId', '[0-9]+');
+
+Route::get('/initDb', [ProgressController::class, 'initDb']);

@@ -11,15 +11,19 @@ class Scores extends Model
 
     protected $table = "scores";
 
-    protected $primaryKey = "score_id";
+    protected $primaryKey = ["uid", "sid"];
 
-    public $incrementing = true;
+    public $incrementing = false;
 
     protected $fillable = [
-        "uid",
-        "sid",
         "score",
+        "start_difficulty",
+        "end_difficulty",
     ];
+
+    protected $start_difficulty;
+
+    protected $end_difficulty;
 
     public $timestamps = false;
 

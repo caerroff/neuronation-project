@@ -29,13 +29,13 @@ CREATE TABLE Sessions(
 );
 
 CREATE TABLE Scores(
-    score_id INT PRIMARY KEY AUTO_INCREMENT,
     uid INT NOT NULL,
     sid INT NOT NULL,
     score INT NOT NULL,
     -- Removing score_normalized, as it can probably be calculated in the application. No need to store it.
     FOREIGN KEY (uid) REFERENCES Users(user_id),
-    FOREIGN KEY (sid) REFERENCES Sessions(session_id)
+    FOREIGN KEY (sid) REFERENCES Sessions(session_id),
+    PRIMARY KEY (uid, sid)
 );
 
 CREATE TABLE DomainCategories(
