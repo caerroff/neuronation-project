@@ -12,9 +12,7 @@ CREATE TABLE Users(
 CREATE TABLE Courses(
     course_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
-    -- timestamp is not very clear. Assuming it is the last time the course has been modified, I replaced it by a common name.
     created_at DATETIME NOT NULL,
-    -- Adding a column to store the last time the course has been modified.
     updated_at DATETIME NOT NULL,
 );
 
@@ -39,7 +37,7 @@ CREATE TABLE Scores(
     FOREIGN KEY (uid) REFERENCES Users(user_id),
     FOREIGN KEY (sid) REFERENCES Sessions(session_id)
 );
->
+
 CREATE TABLE DomainCategories(
     category_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL
