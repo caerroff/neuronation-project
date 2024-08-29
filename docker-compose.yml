@@ -6,7 +6,7 @@ services:
   db:
     image: mysql:8.0
     container_name: neuronation-db
-    restart: unless-stopped
+    restart: always
     environment:
       MYSQL_DATABASE: neuronation
       MYSQL_ROOT_PASSWORD: n3ur0n4t10n
